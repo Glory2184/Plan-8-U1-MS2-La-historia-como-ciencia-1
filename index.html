@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planificación Diaria por Competencias | Colegio Montano</title>
+  <!-- Fuente institucional Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS CDN para utilidad responsiva complementaria -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* ==========================================================================
+       SISTEMA DE DISEÑO INSTITUCIONAL - COLEGIO MONTANO
+       Paleta Oficial:
+       - Azul institucional: #1F3C88
+       - Azul secundario:    #3F72AF
+       - Blanco puro:        #FFFFFF
+       - Amarillo activo:    #F2C94C
+       ========================================================================== */
+    :root {
+      --azul-institucional: #1F3C88;
+      --azul-secundario: #3F72AF;
+      --blanco: #FFFFFF;
+      --amarillo-institucional: #F2C94C;
+      --gris-fondo: #F5F7FA;
+      --gris-borde: #DCE3EE;
+      --texto-principal: #1A2436;
+      --texto-secundario: #4A5568;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--gris-fondo);
+      color: var(--texto-principal);
+      margin: 0;
+      padding: 0;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Estilos de campos editables limpios */
+    [contenteditable="true"] {
+      outline: none;
+      border-radius: 6px;
+      padding: 2px 6px;
+      transition: background-color 0.15s ease, box-shadow 0.15s ease;
+      border: 1px solid transparent;
+    }
+
+    [contenteditable="true"]:hover {
+      background-color: rgba(63, 114, 175, 0.06);
+      border-color: var(--gris-borde);
+    }
+
+    [contenteditable="true"]:focus {
+      background-color: var(--blanco);
+      border-color: var(--azul-secundario);
+      box-shadow: 0 0 0 3px rgba(63, 114, 175, 0.18);
+    }
+
+    /* Tarjetas institucionales */
+    .montano-card {
+      background-color: var(--blanco);
+      border: 1px solid var(--gris-borde);
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(31, 60, 136, 0.05);
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .montano-card-header {
+      background-color: var(--azul-institucional);
+      color: var(--blanco);
+      padding: 0.9rem 1.35rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .montano-card-header.secondary {
+      background-color: var(--azul-secundario);
+    }
+
+    /* Botones institucionales */
+    .btn-institucional {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      padding: 0.55rem 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      border: 1px solid transparent;
+      user-select: none;
+    }
+
+    .btn-primary {
+      background-color: var(--azul-institucional);
+      color: var(--blanco);
+    }
+    .btn-primary:hover {
+      background-color: #162c66;
+    }
+
+    .btn-yellow {
+      background-color: var(--amarillo-institucional);
+      color: var(--azul-institucional);
+      font-weight: 700;
+    }
+    .btn-yellow:hover {
+      background-color: #e6bc3b;
+    }
+
+    .btn-outline {
+      background-color: var(--blanco);
+      color: var(--azul-institucional);
+      border-color: var(--blanco);
+    }
+    .btn-outline:hover {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+
+    .btn-ghost-light {
+      background-color: rgba(255, 255, 255, 0.14);
+      color: var(--blanco);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .btn-ghost-light:hover {
+      background-color: rgba(255, 255, 255, 0.24);
+    }
+
+    /* Pestañas de Secuencia Didáctica */
+    .tab-btn {
+      flex: 1 1 160px;
+      background-color: var(--blanco);
+      color: var(--azul-institucional);
+      border: 2px solid var(--gris-borde);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--azul-secundario);
+    }
+
+    .tab-btn.active {
+      background-color: var(--azul-institucional);
+      color: var(--blanco);
+      border-color: var(--azul-institucional);
+      box-shadow: 0 4px 12px rgba(31, 60, 136, 0.22);
+    }
+
+    .tab-btn.active .tab-badge {
+      background-color: var(--amarillo-institucional);
+      color: var(--azul-institucional);
+    }
+
+    .tab-badge {
+      display: inline-block;
+      background-color: rgba(63, 114, 175, 0.14);
+      color: var(--azul-institucional);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+    }
+
+    /* Paneles de Secuencia */
+    .momento-panel {
+      display: none;
+    }
+    .momento-panel.active {
+      display: block;
+    }
+
+    /* Hábitos interactivos */
+    .habito-card {
+      border: 2px solid var(--gris-borde);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      background-color: var(--blanco);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .habito-card.selected {
+      border-color: var(--amarillo-institucional);
+      background-color: rgba(242, 201, 76, 0.13);
+    }
+
+    .habito-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.8rem;
+      background-color: var(--gris-borde);
+      color: var(--azul-institucional);
+    }
+
+    .habito-card.selected .habito-pill {
+      background-color: var(--amarillo-institucional);
+      color: var(--azul-institucional);
+    }
+
+    /* Escala de lista de cotejo */
+    .rubric-radio {
+      accent-color: var(--azul-institucional);
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    /* Notificación Toast */
+    #toast-notification {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background-color: var(--azul-institucional);
+      color: var(--blanco);
+      border-left: 5px solid var(--amarillo-institucional);
+      padding: 0.85rem 1.25rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      font-size: 0.9rem;
+      font-weight: 500;
+      z-index: 9999;
+      transform: translateY(130%);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    #toast-notification.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Modal de Confirmación */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(26, 36, 54, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+      padding: 1rem;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    /* ==========================================================================
+       ESTILOS DE IMPRESIÓN (@media print)
+       Muestra todos los momentos didácticos completos y limpia la interfaz
+       ========================================================================== */
+    @media print {
+      body {
+        background-color: #FFFFFF !important;
+        color: #000000 !important;
+        font-size: 11pt;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .main-container {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .montano-card {
+        box-shadow: none !important;
+        border: 1.5px solid #1F3C88 !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+        margin-bottom: 14pt;
+      }
+
+      .montano-card-header {
+        background-color: #1F3C88 !important;
+        color: #FFFFFF !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .montano-card-header.secondary {
+        background-color: #3F72AF !important;
+        color: #FFFFFF !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* Forzar visualización de TODOS los momentos didácticos al imprimir */
+      .momento-panel {
+        display: block !important;
+        border-top: 2px solid #3F72AF;
+        padding-top: 12pt;
+        margin-top: 12pt;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .momento-panel:first-of-type {
+        border-top: none;
+        padding-top: 0;
+        margin-top: 0;
+      }
+
+      .habito-card:not(.selected) {
+        display: none !important;
+      }
+
+      .habito-card.selected {
+        background-color: #FFFDF5 !important;
+        border-color: #F2C94C !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      [contenteditable="true"] {
+        border: none !important;
+        padding: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA SUPERIOR DE ACCIONES DOCENTES (No se imprime) -->
+  <div class="no-print sticky top-0 z-40 shadow-md" style="background-color: #1F3C88; border-bottom: 3px solid #F2C94C;">
+    <div class="max-w-6xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2 text-white text-xs sm:text-sm font-medium">
+        <span class="inline-block w-2.5 h-2.5 rounded-full" style="background-color: #F2C94C;"></span>
+        <span>Modo Edición Activo — Haz clic sobre cualquier texto para personalizarlo</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button type="button" onclick="savePlan(true)" class="btn-institucional btn-yellow" title="Guardar cambios en este navegador">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          Guardar
+        </button>
+        <button type="button" onclick="exportHTML()" class="btn-institucional btn-outline" title="Descargar archivo HTML con los cambios">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V3"/></svg>
+          Exportar HTML
+        </button>
+        <button type="button" onclick="window.print()" class="btn-institucional btn-outline" title="Imprimir o Guardar como PDF">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"/></svg>
+          Imprimir / PDF
+        </button>
+        <button type="button" onclick="openResetModal()" class="btn-institucional btn-ghost-light" title="Restaurar valores originales">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M5 19A9 9 0 0019 5"/></svg>
+          Restablecer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="main-container max-w-6xl mx-auto px-4 py-6 sm:py-8">
+
+    <!-- ======================================================================
+         1. ENCABEZADO INSTITUCIONAL Y DATOS GENERALES EDITABLES
+         ====================================================================== -->
+    <header class="montano-card">
+      <div class="p-5 sm:p-6 text-white flex flex-col md:flex-row md:items-center md:justify-between gap-4" style="background: linear-gradient(135deg, #1F3C88 0%, #3F72AF 100%); border-bottom: 4px solid #F2C94C;">
+        <div class="flex items-center gap-4">
+          <!-- Emblema Geométrico Institucional SVG -->
+          <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center shrink-0 shadow-md" style="background-color: #FFFFFF; border: 3px solid #F2C94C;">
+            <svg class="w-9 h-9" viewBox="0 0 48 48" fill="none">
+              <path d="M24 4L6 12V24C6 35.1 13.7 45.2 24 48C34.3 45.2 42 35.1 42 24V12L24 4Z" fill="#1F3C88"/>
+              <path d="M14 31L20 19L24 25L29 16L34 31H14Z" fill="#F2C94C"/>
+              <circle cx="24" cy="12" r="2.5" fill="#FFFFFF"/>
+            </svg>
+          </div>
+          <div>
+            <div class="inline-block text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-1" style="background-color: #F2C94C; color: #1F3C88;">
+              Modelo Pedagógico Institucional
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">
+              COLEGIO <span contenteditable="true" data-field="colegio" class="underline decoration-dotted">Montano</span>
+            </h1>
+            <p class="text-sm sm:text-base text-blue-100 font-medium">
+              Planificación Diaria de Clase por Competencias • Metodologías Activas
+            </p>
+          </div>
+        </div>
+
+        <!-- Indicador Dinámico de Duración Total -->
+        <div class="bg-white/10 backdrop-blur-sm border border-white/25 rounded-xl p-3.5 text-left md:text-right shrink-0">
+          <div class="text-xs uppercase tracking-wider text-blue-100 font-semibold">Duración Total de Sesión</div>
+          <div class="flex items-center md:justify-end gap-2 mt-0.5">
+            <span id="badge-total-minutos" class="text-2xl font-extrabold px-2.5 py-0.5 rounded-lg" style="background-color: #F2C94C; color: #1F3C88;">
+              60 min
+            </span>
+          </div>
+          <div id="desglose-tiempos-header" class="text-xs text-blue-100 mt-1 font-medium">
+            IM 10m + TP 20m + TC 20m + P 10m = 60 min
+          </div>
+        </div>
+      </div>
+
+      <!-- Cuadrícula de Datos Generales Editables -->
+      <div class="p-5 sm:p-6 bg-white">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+          <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/60">
+            <span class="block text-[11px] font-bold uppercase tracking-wider" style="color: #3F72AF;">Modalidad</span>
+            <div contenteditable="true" data-field="modalidad" class="font-semibold text-sm sm:text-base mt-0.5 text-slate-900">Presencial</div>
+          </div>
+          <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/60">
+            <span class="block text-[11px] font-bold uppercase tracking-wider" style="color: #3F72AF;">Materia / Área</span>
+            <div contenteditable="true" data-field="materia" class="font-semibold text-sm sm:text-base mt-0.5 text-slate-900">Medio Social</div>
+          </div>
+          <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/60 lg:col-span-2">
+            <span class="block text-[11px] font-bold uppercase tracking-wider" style="color: #3F72AF;">Tema de la Sesión</span>
+            <div contenteditable="true" data-field="tema" class="font-bold text-sm sm:text-base mt-0.5" style="color: #1F3C88;">La historia como ciencia</div>
+          </div>
+          <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/60">
+            <span class="block text-[11px] font-bold uppercase tracking-wider" style="color: #3F72AF;">Grado</span>
+            <div contenteditable="true" data-field="grado" class="font-semibold text-sm sm:text-base mt-0.5 text-slate-900">Segundo Primaria</div>
+          </div>
+
+          <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/60">
+            <span class="block text-[11px] font-bold uppercase tracking-wider" style="color: #3F72AF;">Unidad</span>
+            <div contenteditable="true" data-field="unidad" class="font-semibold text-sm sm:text-base mt-0.5 text-slate-900">1</div>
+          </div>
+          <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/60">
+            <span class="block text-[11px] font-bold uppercase tracking-wider" style="color: #3F72AF;">Número de Plan</span>
+            <div contenteditable="true" data-field="numero_plan" class="font-semibold text-sm sm:text-base mt-0.5 text-slate-900">8</div>
+          </div>
+          <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/60">
+            <span class="block text-[11px] font-bold uppercase tracking-wider" style="color: #3F72AF;">Fecha</span>
+            <div contenteditable="true" data-field="fecha" class="font-semibold text-sm sm:text-base mt-0.5 text-slate-900">Febrero-Marzo 2027</div>
+          </div>
+          <div class="p-3 rounded-xl border border-slate-200 bg-slate-50/60">
+            <span class="block text-[11px] font-bold uppercase tracking-wider" style="color: #3F72AF;">Docente</span>
+            <div contenteditable="true" data-field="docente" class="font-semibold text-sm sm:text-base mt-0.5 text-slate-900">Gloria Rodriguez</div>
+          </div>
+          <div class="p-3 rounded-xl border-2 bg-amber-50/40" style="border-color: #F2C94C;">
+            <span class="block text-[11px] font-bold uppercase tracking-wider" style="color: #1F3C88;">Duración Planificada</span>
+            <div contenteditable="true" data-field="duracion_texto" class="font-bold text-sm sm:text-base mt-0.5" style="color: #1F3C88;">60 minutos</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ======================================================================
+         2. COMPETENCIA Y LOGRO DE APRENDIZAJE
+         ====================================================================== -->
+    <section class="montano-card">
+      <div class="montano-card-header">
+        <div class="flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm" style="background-color: #F2C94C; color: #1F3C88;">1</span>
+          <h2 class="text-base sm:text-lg font-bold tracking-tight">Competencia y Logro de Aprendizaje</h2>
+        </div>
+        <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-white/15">Alineación Curricular</span>
+      </div>
+      <div class="p-5 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="p-4 rounded-xl border-l-4 bg-slate-50/70" style="border-left-color: #1F3C88;">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-extrabold uppercase tracking-wider px-2 py-0.5 rounded" style="background-color: #1F3C88; color: #FFFFFF;">Competencia de Aprendizaje</span>
+          </div>
+          <p contenteditable="true" data-field="competencia" class="text-sm sm:text-base text-slate-800 leading-relaxed">
+            Analiza la función de la historia como una ciencia social que investiga los hechos del pasado mediante diversas fuentes, relacionando los acontecimientos familiares y comunitarios con su propia identidad en el presente.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl border-l-4 bg-amber-50/35" style="border-left-color: #F2C94C;">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-xs font-extrabold uppercase tracking-wider px-2 py-0.5 rounded" style="background-color: #F2C94C; color: #1F3C88;">Logro de Aprendizaje (Observable y Medible)</span>
+          </div>
+          <p contenteditable="true" data-field="logro" class="text-sm sm:text-base text-slate-800 leading-relaxed">
+            Al finalizar la sesión de 60 minutos, el estudiante clasifica correctamente al menos 4 tipos de fuentes históricas (orales, escritas, materiales y gráficas) y reconstruye la secuencia cronológica de un suceso de su entorno utilizando evidencias concretas.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         3. COMPETENCIAS CLAVE Y COMPETENCIAS BLANDAS
+         ====================================================================== -->
+    <section class="montano-card">
+      <div class="montano-card-header secondary">
+        <div class="flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm" style="background-color: #F2C94C; color: #1F3C88;">2</span>
+          <h2 class="text-base sm:text-lg font-bold tracking-tight">Competencias Clave y Competencias Blandas</h2>
+        </div>
+        <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-white/15">Evidencias observables en aula</span>
+      </div>
+      <div class="p-5 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Competencias Clave -->
+        <div class="border border-slate-200 rounded-xl p-4">
+          <h3 class="text-sm font-extrabold uppercase tracking-wider mb-3 flex items-center gap-2" style="color: #1F3C88;">
+            <span class="w-2.5 h-2.5 rounded-full" style="background-color: #1F3C88;"></span>
+            Competencias Clave Seleccionadas
+          </h3>
+          <ul class="space-y-3 text-sm" contenteditable="true" data-field="competencias_clave">
+            <li class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
+              <strong style="color: #1F3C88;">Pensamiento crítico:</strong> Diferencia entre un relato imaginario (cuento o fantasía) y un hecho histórico comprobable mediante pistas reales.
+            </li>
+            <li class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
+              <strong style="color: #1F3C88;">Resolución de problemas:</strong> Deduce qué ocurrió en el pasado a partir de objetos, cartas y fotografías antiguas incompletas.
+            </li>
+            <li class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
+              <strong style="color: #1F3C88;">Trabajo en equipo:</strong> Colabora activamente en la clasificación de evidencias históricas cumpliendo un rol asignado dentro del grupo.
+            </li>
+          </ul>
+        </div>
+
+        <!-- Competencias Blandas -->
+        <div class="border border-slate-200 rounded-xl p-4">
+          <h3 class="text-sm font-extrabold uppercase tracking-wider mb-3 flex items-center gap-2" style="color: #3F72AF;">
+            <span class="w-2.5 h-2.5 rounded-full" style="background-color: #F2C94C;"></span>
+            Competencias Blandas Seleccionadas
+          </h3>
+          <ul class="space-y-3 text-sm" contenteditable="true" data-field="competencias_blandas">
+            <li class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
+              <strong style="color: #3F72AF;">Comunicación:</strong> Expresa con claridad sus hallazgos e ideas frente a sus compañeros respetando los turnos de palabra.
+            </li>
+            <li class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
+              <strong style="color: #3F72AF;">Toma de decisiones:</strong> Acuerda junto con su equipo qué categoría de fuente histórica corresponde a cada evidencia y descarta pistas falsas.
+            </li>
+            <li class="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
+              <strong style="color: #3F72AF;">Inteligencia emocional:</strong> Escucha con empatía y respeto las historias familiares compartidas por sus compañeros de clase.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         4. HÁBITOS DEL MODELO FORMATIVO MONTANO
+         ====================================================================== -->
+    <section class="montano-card">
+      <div class="montano-card-header">
+        <div class="flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm" style="background-color: #F2C94C; color: #1F3C88;">3</span>
+          <h2 class="text-base sm:text-lg font-bold tracking-tight">Hábitos del Modelo Formativo Montano</h2>
+        </div>
+        <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-white/15 no-print">Haz clic en un hábito para activarlo o desactivarlo</span>
+      </div>
+      <div class="p-5 sm:p-6">
+        <p class="text-xs sm:text-sm text-slate-600 mb-4 no-print">
+          Los hábitos resaltados en <strong style="color: #1F3C88; background-color: rgba(242,201,76,0.35); padding: 1px 6px; border-radius: 4px;">amarillo institucional</strong> se trabajan intencionalmente en esta sesión con acciones concretas:
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5" id="habitos-container">
+          <!-- Hábito 1 -->
+          <div class="habito-card" data-habito="1" onclick="toggleHabito(this, event)">
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-2">
+                <span class="habito-pill">1</span>
+                <span class="font-bold text-sm" style="color: #1F3C88;">Ser proactivo</span>
+              </div>
+              <span class="habito-status text-[11px] font-bold uppercase px-2 py-0.5 rounded bg-slate-100 text-slate-500">Opcional</span>
+            </div>
+            <p contenteditable="true" data-field="habito_1_desc" onclick="event.stopPropagation()" class="text-xs text-slate-600">
+              Toma la iniciativa al buscar ejemplos de recuerdos familiares sin esperar a que el docente le indique qué dibujar.
+            </p>
+          </div>
+
+          <!-- Hábito 2 (Activo por defecto) -->
+          <div class="habito-card selected" data-habito="2" onclick="toggleHabito(this, event)">
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-2">
+                <span class="habito-pill">2</span>
+                <span class="font-bold text-sm" style="color: #1F3C88;">Comenzar con un fin en mente</span>
+              </div>
+              <span class="habito-status text-[11px] font-bold uppercase px-2 py-0.5 rounded" style="background-color: #F2C94C; color: #1F3C88;">Activo</span>
+            </div>
+            <p contenteditable="true" data-field="habito_2_desc" onclick="event.stopPropagation()" class="text-xs text-slate-700">
+              <strong>Acción concreta:</strong> Desde la Introducción Motivante, los estudiantes conocen su misión de convertirse en "Detectives del Tiempo" para reconstruir hechos reales con pruebas.
+            </p>
+          </div>
+
+          <!-- Hábito 3 -->
+          <div class="habito-card" data-habito="3" onclick="toggleHabito(this, event)">
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-2">
+                <span class="habito-pill">3</span>
+                <span class="font-bold text-sm" style="color: #1F3C88;">Poner primero lo primero</span>
+              </div>
+              <span class="habito-status text-[11px] font-bold uppercase px-2 py-0.5 rounded bg-slate-100 text-slate-500">Opcional</span>
+            </div>
+            <p contenteditable="true" data-field="habito_3_desc" onclick="event.stopPropagation()" class="text-xs text-slate-600">
+              Completa primero la clasificación de las 4 pistas en su bitácora antes de colorear las ilustraciones.
+            </p>
+          </div>
+
+          <!-- Hábito 4 -->
+          <div class="habito-card" data-habito="4" onclick="toggleHabito(this, event)">
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-2">
+                <span class="habito-pill">4</span>
+                <span class="font-bold text-sm" style="color: #1F3C88;">Pensar ganar-ganar</span>
+              </div>
+              <span class="habito-status text-[11px] font-bold uppercase px-2 py-0.5 rounded bg-slate-100 text-slate-500">Opcional</span>
+            </div>
+            <p contenteditable="true" data-field="habito_4_desc" onclick="event.stopPropagation()" class="text-xs text-slate-600">
+              Comparte los materiales del equipo (goma, marcadores y tarjetas) para que todos logren terminar el mural.
+            </p>
+          </div>
+
+          <!-- Hábito 5 (Activo por defecto) -->
+          <div class="habito-card selected" data-habito="5" onclick="toggleHabito(this, event)">
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-2">
+                <span class="habito-pill">5</span>
+                <span class="font-bold text-sm" style="color: #1F3C88;">Buscar primero entender, luego ser entendido</span>
+              </div>
+              <span class="habito-status text-[11px] font-bold uppercase px-2 py-0.5 rounded" style="background-color: #F2C94C; color: #1F3C88;">Activo</span>
+            </div>
+            <p contenteditable="true" data-field="habito_5_desc" onclick="event.stopPropagation()" class="text-xs text-slate-700">
+              <strong>Acción concreta:</strong> Durante el Trabajo Cooperativo, cada integrante escucha en silencio la explicación del Analista de Pistas antes de opinar sobre qué tarjeta es falsa.
+            </p>
+          </div>
+
+          <!-- Hábito 6 (Activo por defecto) -->
+          <div class="habito-card selected" data-habito="6" onclick="toggleHabito(this, event)">
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-2">
+                <span class="habito-pill">6</span>
+                <span class="font-bold text-sm" style="color: #1F3C88;">Sinergizar</span>
+              </div>
+              <span class="habito-status text-[11px] font-bold uppercase px-2 py-0.5 rounded" style="background-color: #F2C94C; color: #1F3C88;">Activo</span>
+            </div>
+            <p contenteditable="true" data-field="habito_6_desc" onclick="event.stopPropagation()" class="text-xs text-slate-700">
+              <strong>Acción concreta:</strong> Los equipos unen distintas fuentes (fotografía, carta, relato y objeto) para armar una línea de tiempo más completa de la que harían solos.
+            </p>
+          </div>
+
+          <!-- Hábito 7 -->
+          <div class="habito-card" data-habito="7" onclick="toggleHabito(this, event)">
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-2">
+                <span class="habito-pill">7</span>
+                <span class="font-bold text-sm" style="color: #1F3C88;">Afilar la sierra</span>
+              </div>
+              <span class="habito-status text-[11px] font-bold uppercase px-2 py-0.5 rounded bg-slate-100 text-slate-500">Opcional</span>
+            </div>
+            <p contenteditable="true" data-field="habito_7_desc" onclick="event.stopPropagation()" class="text-xs text-slate-600">
+              Reflexiona en casa conversando con sus abuelos sobre objetos antiguos para fortalecer su identidad familiar.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         5. SECUENCIA DIDÁCTICA INTERACTIVA (IM - TP - TC - P = 60 MINUTOS)
+         ====================================================================== -->
+    <section class="montano-card">
+      <div class="montano-card-header">
+        <div class="flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm" style="background-color: #F2C94C; color: #1F3C88;">4</span>
+          <h2 class="text-base sm:text-lg font-bold tracking-tight">Secuencia Didáctica Obligatoria — 60 Minutos</h2>
+        </div>
+        <div id="alerta-tiempo-secuencia" class="text-xs font-bold px-3 py-1 rounded-full" style="background-color: #F2C94C; color: #1F3C88;">
+          Suma exacta: 60 / 60 min
+        </div>
+      </div>
+
+      <div class="p-5 sm:p-6">
+        <!-- Barra de Navegación por Pestañas (Oculta al imprimir) -->
+        <div class="no-print mb-6">
+          <div class="flex flex-wrap gap-2.5 mb-3" role="tablist">
+            <button type="button" class="tab-btn active" data-tab="im" onclick="switchTab('im')">
+              <div class="flex items-center justify-between w-full">
+                <span class="font-extrabold text-sm">IM • Introducción</span>
+                <span class="tab-badge"><span id="badge-min-im">10</span> min</span>
+              </div>
+              <span class="text-xs opacity-85 truncate">La Caja Misteriosa del Tiempo</span>
+            </button>
+
+            <button type="button" class="tab-btn" data-tab="tp" onclick="switchTab('tp')">
+              <div class="flex items-center justify-between w-full">
+                <span class="font-extrabold text-sm">TP • Trabajo Personal</span>
+                <span class="tab-badge"><span id="badge-min-tp">20</span> min</span>
+              </div>
+              <span class="text-xs opacity-85 truncate">Mi Bitácora de Detective Histórico</span>
+            </button>
+
+            <button type="button" class="tab-btn" data-tab="tc" onclick="switchTab('tc')">
+              <div class="flex items-center justify-between w-full">
+                <span class="font-extrabold text-sm">TC • Trabajo Cooperativo</span>
+                <span class="tab-badge"><span id="badge-min-tc">20</span> min</span>
+              </div>
+              <span class="text-xs opacity-85 truncate">Misión Archivo: Historia del Barrio</span>
+            </button>
+
+            <button type="button" class="tab-btn" data-tab="p" onclick="switchTab('p')">
+              <div class="flex items-center justify-between w-full">
+                <span class="font-extrabold text-sm">P • Plenaria</span>
+                <span class="tab-badge"><span id="badge-min-p">10</span> min</span>
+              </div>
+              <span class="text-xs opacity-85 truncate">Congreso y Ticket de Salida</span>
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between flex-wrap gap-2 pt-2 border-t border-slate-100">
+            <span class="text-xs text-slate-500">Navega por momentos para impartir la clase o expande todos para revisar el flujo completo:</span>
+            <button type="button" id="btn-toggle-all" onclick="toggleAllPanels()" class="text-xs font-bold px-3 py-1.5 rounded-lg border transition" style="color: #1F3C88; border-color: #3F72AF; background-color: #FFFFFF;">
+              Ver los 4 momentos juntos
+            </button>
+          </div>
+        </div>
+
+        <!-- ==================== MOMENTO 1: IM (10 MINUTOS) ==================== -->
+        <article id="panel-im" class="momento-panel active">
+          <div class="rounded-xl border-2 p-4 sm:p-5" style="border-color: #3F72AF; background-color: #FFFFFF;">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-200">
+              <div>
+                <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md text-white" style="background-color: #1F3C88;">
+                  Momento 1 • IM — Introducción Motivante
+                </span>
+                <h3 contenteditable="true" data-field="im_titulo" class="text-lg sm:text-xl font-extrabold mt-2" style="color: #1F3C88;">
+                  Actividad: "La Caja Misteriosa del Tiempo"
+                </h3>
+              </div>
+              <div class="flex items-center gap-2 px-3.5 py-2 rounded-xl font-extrabold text-sm" style="background-color: #F2C94C; color: #1F3C88;">
+                <span>Duración:</span>
+                <span contenteditable="true" data-field="im_minutos" id="input-min-im" oninput="recalculateTimes()" class="underline">10</span>
+                <span>minutos</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <h4 class="text-xs font-extrabold uppercase tracking-wider mb-1" style="color: #3F72AF;">Propósito Pedagógico</h4>
+                <p contenteditable="true" data-field="im_proposito" class="text-sm text-slate-800">
+                  Activar conocimientos previos sobre el pasado cercano, despertar la curiosidad científica y presentar una situación problema cotidiana que permita diferenciar entre inventar cuentos e investigar hechos reales con pruebas.
+                </p>
+              </div>
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <h4 class="text-xs font-extrabold uppercase tracking-wider mb-1" style="color: #3F72AF;">Hábito Formativo y Evidencia de Participación</h4>
+                <p contenteditable="true" data-field="im_evidencia" class="text-sm text-slate-800">
+                  <strong>Hábito 2 (Comenzar con un fin en mente):</strong> Los alumnos asumen la meta de ser "Detectives del Tiempo".<br/>
+                  <strong>Evidencia:</strong> Respuestas orales argumentadas donde distinguen una suposición imaginaria de una pista real.
+                </p>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <h4 class="text-xs font-extrabold uppercase tracking-wider mb-2" style="color: #1F3C88;">Instrucciones Paso a Paso y Distribución de los 10 Minutos</h4>
+              <div contenteditable="true" data-field="im_pasos" class="space-y-2.5 text-sm text-slate-800">
+                <div class="p-3 rounded-lg border-l-4 bg-blue-50/40" style="border-left-color: #1F3C88;">
+                  <strong style="color: #1F3C88;">Minutos 0 a 3 (Exploración sensorial):</strong> La docente presenta una caja cerrada decorada con lupas y relojes. Extrae 3 objetos/evidencias del pasado (una fotografía en blanco y negro, un casete o teléfono antiguo y una carta escrita a mano). Pregunta generadora: <em>"¿Alguien reconoce estos objetos? ¿Cómo podemos saber cómo vivían nuestros abuelos si nosotros aún no habíamos nacido?"</em>
+                </div>
+                <div class="p-3 rounded-lg border-l-4 bg-blue-50/40" style="border-left-color: #3F72AF;">
+                  <strong style="color: #1F3C88;">Minutos 3 a 7 (Situación problema):</strong> Plantea el reto: <em>"Imaginemos que encontramos una mochila olvidada en el patio del colegio hace 30 años. ¿Cómo descubrimos de quién era sin adivinar ni inventar historias?"</em> Se escuchan 4-5 participaciones y se conecta con la idea central: <strong>La Historia es una ciencia</strong> que investiga el pasado buscando pruebas reales llamadas <em>fuentes históricas</em>.
+                </div>
+                <div class="p-3 rounded-lg border-l-4 bg-amber-50/50" style="border-left-color: #F2C94C;">
+                  <strong style="color: #1F3C88;">Minutos 7 a 10 (Conexión con su realidad):</strong> Lluvia rápida de ejemplos: cada niño menciona mentalmente o comparte un tesoro familiar que guarda en casa (su primer zapatito, fotos de bebé, anécdotas de sus papás) que sirve como prueba de su propia historia.
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl border border-dashed text-xs sm:text-sm" style="border-color: #3F72AF; background-color: #F8FAFC;">
+              <strong style="color: #1F3C88;">Recursos del momento:</strong>
+              <span contenteditable="true" data-field="im_recursos">Caja misteriosa decorada, 3 objetos o láminas antiguas (foto en blanco y negro, carta manuscrita, objeto antiguo), pizarra y marcadores.</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- ==================== MOMENTO 2: TP (20 MINUTOS) ==================== -->
+        <article id="panel-tp" class="momento-panel">
+          <div class="rounded-xl border-2 p-4 sm:p-5" style="border-color: #3F72AF; background-color: #FFFFFF;">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-200">
+              <div>
+                <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md text-white" style="background-color: #3F72AF;">
+                  Momento 2 • TP — Trabajo Personal
+                </span>
+                <h3 contenteditable="true" data-field="tp_titulo" class="text-lg sm:text-xl font-extrabold mt-2" style="color: #1F3C88;">
+                  Actividad: "Mi Bitácora de Detective Histórico"
+                </h3>
+              </div>
+              <div class="flex items-center gap-2 px-3.5 py-2 rounded-xl font-extrabold text-sm" style="background-color: #F2C94C; color: #1F3C88;">
+                <span>Duración:</span>
+                <span contenteditable="true" data-field="tp_minutos" id="input-min-tp" oninput="recalculateTimes()" class="underline">20</span>
+                <span>minutos</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <h4 class="text-xs font-extrabold uppercase tracking-wider mb-1" style="color: #3F72AF;">Propósito Pedagógico</h4>
+                <p contenteditable="true" data-field="tp_proposito" class="text-sm text-slate-800">
+                  Construir y demostrar de manera autónoma la comprensión sobre el trabajo del historiador, clasificando los 4 tipos básicos de fuentes históricas (orales, materiales, gráficas y escritas) y aplicándolos a su historia personal.
+                </p>
+              </div>
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <h4 class="text-xs font-extrabold uppercase tracking-wider mb-1" style="color: #3F72AF;">Producto Individual Verificable y Seguimiento</h4>
+                <p contenteditable="true" data-field="tp_producto" class="text-sm text-slate-800">
+                  <strong>Producto:</strong> Hoja de trabajo "Bitácora de Detective Histórico" resuelta con las 4 pistas clasificadas y el dibujo/descripción de una fuente histórica familiar.<br/>
+                  <strong>Seguimiento:</strong> Recorrido por pupitres verificando que justifiquen por qué su ejemplo personal corresponde a esa categoría.
+                </p>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <h4 class="text-xs font-extrabold uppercase tracking-wider mb-2" style="color: #1F3C88;">Instrucciones Paso a Paso y Distribución de los 20 Minutos</h4>
+              <div contenteditable="true" data-field="tp_pasos" class="space-y-2.5 text-sm text-slate-800">
+                <div class="p-3 rounded-lg border-l-4 bg-blue-50/40" style="border-left-color: #1F3C88;">
+                  <strong style="color: #1F3C88;">Minutos 0 a 4 (Lectura guiada e instrucciones):</strong> Se entrega la hoja impresa <em>"Bitácora de Detective Histórico"</em>. Lectura compartida de un párrafo corto (4 líneas) que explica los 4 tipos de pistas: <strong>Orales</strong> (lo que nos cuentan), <strong>Materiales</strong> (objetos), <strong>Gráficas</strong> (fotos y dibujos) y <strong>Escritas</strong> (cartas y libros).
+                </div>
+                <div class="p-3 rounded-lg border-l-4 bg-blue-50/40" style="border-left-color: #3F72AF;">
+                  <strong style="color: #1F3C88;">Minutos 4 a 12 (Análisis y clasificación de casos):</strong> De forma individual, cada alumno observa 4 casos ilustrados (1. Un abuelo relatando cómo era el parque; 2. Una moneda antigua; 3. Una fotografía de la inauguración de la escuela; 4. Un periódico viejo) y los une con su tipo de fuente. Luego, marca con ✔ solo las acciones verdaderas de un historiador (descartando afirmaciones falsas como <em>"inventa dragones"</em>).
+                </div>
+                <div class="p-3 rounded-lg border-l-4 bg-amber-50/50" style="border-left-color: #F2C94C;">
+                  <strong style="color: #1F3C88;">Minutos 12 a 20 (Aplicación original a su propia vida):</strong> En el recuadro inferior <em>"Mi propia pista del pasado"</em>, cada estudiante dibuja un objeto, foto, carta o relato de su familia, escribe qué tipo de fuente es y completa la frase: <em>"Esta pista demuestra que en mi familia..."</em>.
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl border border-dashed text-xs sm:text-sm" style="border-color: #3F72AF; background-color: #F8FAFC;">
+              <strong style="color: #1F3C88;">Recursos del momento:</strong>
+              <span contenteditable="true" data-field="tp_recursos">Hoja de trabajo impresa "Bitácora de Detective Histórico" (1 por estudiante), lápiz, borrador, crayones y cuaderno de Medio Social.</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- ==================== MOMENTO 3: TC (20 MINUTOS) ==================== -->
+        <article id="panel-tc" class="momento-panel">
+          <div class="rounded-xl border-2 p-4 sm:p-5" style="border-color: #3F72AF; background-color: #FFFFFF;">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-200">
+              <div>
+                <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md text-white" style="background-color: #1F3C88;">
+                  Momento 3 • TC — Trabajo Cooperativo
+                </span>
+                <h3 contenteditable="true" data-field="tc_titulo" class="text-lg sm:text-xl font-extrabold mt-2" style="color: #1F3C88;">
+                  Actividad: "Misión Archivo: Reconstruyendo la Historia de Nuestra Escuela"
+                </h3>
+              </div>
+              <div class="flex items-center gap-2 px-3.5 py-2 rounded-xl font-extrabold text-sm" style="background-color: #F2C94C; color: #1F3C88;">
+                <span>Duración:</span>
+                <span contenteditable="true" data-field="tc_minutos" id="input-min-tc" oninput="recalculateTimes()" class="underline">20</span>
+                <span>minutos</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <h4 class="text-xs font-extrabold uppercase tracking-wider mb-1" style="color: #3F72AF;">Propósito Pedagógico y Organización</h4>
+                <p contenteditable="true" data-field="tc_proposito" class="text-sm text-slate-800">
+                  Aplicar el método histórico en equipos heterogéneos de 4 integrantes (organizados previamente por la docente, no por afinidad) para analizar evidencias, descartar información falsa y ordenar cronológicamente un suceso comunitario.
+                </p>
+              </div>
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <h4 class="text-xs font-extrabold uppercase tracking-wider mb-1" style="color: #3F72AF;">Producto Colectivo y Criterios de Evaluación</h4>
+                <p contenteditable="true" data-field="tc_producto" class="text-sm text-slate-800">
+                  <strong>Producto:</strong> "Mural de Evidencias" con 4 fuentes ordenadas cronológicamente (Antes → Después → Ahora), la pista falsa descartada y dos oraciones de conclusión.<br/>
+                  <strong>Criterios:</strong> Cumplimiento de roles, descarte argumentado de la pista falsa y secuencia lógica.
+                </p>
+              </div>
+            </div>
+
+            <!-- Roles Obligatorios -->
+            <div class="mb-4 p-3.5 rounded-xl border" style="border-color: #F2C94C; background-color: rgba(242, 201, 76, 0.1);">
+              <h4 class="text-xs font-extrabold uppercase tracking-wider mb-2" style="color: #1F3C88;">Asignación de Roles Cooperativos (4 Integrantes por Equipo)</h4>
+              <div contenteditable="true" data-field="tc_roles" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-xs text-slate-800">
+                <div class="bg-white p-2.5 rounded-lg border border-slate-200">
+                  <strong style="color: #1F3C88;">1. Coordinador/a de tiempo:</strong> Cuida que todos hablen por turnos y controla el avance del reloj.
+                </div>
+                <div class="bg-white p-2.5 rounded-lg border border-slate-200">
+                  <strong style="color: #1F3C88;">2. Analista de pistas:</strong> Lee en voz alta cada tarjeta del expediente y describe qué muestra.
+                </div>
+                <div class="bg-white p-2.5 rounded-lg border border-slate-200">
+                  <strong style="color: #1F3C88;">3. Secretario/a organizador:</strong> Pega las fuentes en orden en el mural y escribe las conclusiones dictadas.
+                </div>
+                <div class="bg-white p-2.5 rounded-lg border border-slate-200">
+                  <strong style="color: #1F3C88;">4. Portavoz:</strong> Presenta en la plenaria cómo descubrieron la pista falsa y qué concluyeron.
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <h4 class="text-xs font-extrabold uppercase tracking-wider mb-2" style="color: #1F3C88;">Instrucciones Paso a Paso y Distribución de los 20 Minutos</h4>
+              <div contenteditable="true" data-field="tc_pasos" class="space-y-2.5 text-sm text-slate-800">
+                <div class="p-3 rounded-lg border-l-4 bg-blue-50/40" style="border-left-color: #1F3C88;">
+                  <strong style="color: #1F3C88;">Minutos 0 a 3 (Conformación y entrega de expedientes):</strong> La docente indica los equipos previamente conformados, entrega los gafetes de rol y un sobre cerrado llamado <em>"Expediente Histórico"</em> que contiene 5 tarjetas ilustradas mezcladas sobre la historia de la escuela/comunidad (ej. foto del terreno vacío, carta de fundación, testimonio escrito de una maestra antigua, medalla del primer aniversario y <strong>1 pista falsa</strong>: un dibujo de un dinosaurio jugando fútbol en el patio).
+                </div>
+                <div class="p-3 rounded-lg border-l-4 bg-blue-50/40" style="border-left-color: #3F72AF;">
+                  <strong style="color: #1F3C88;">Minutos 3 a 13 (Investigación, filtro crítico y línea de tiempo):</strong> Practicando los <strong>Hábitos 5 y 6</strong>, el equipo examina las 5 tarjetas, detecta y aparta la pista falsa explicando por qué no es histórica, clasifica las 4 evidencias verdaderas y las pega en orden cronológico (<em>Antes → Después → Ahora</em>) en su hoja doble oficio <em>"Mural de Evidencias"</em>.
+                </div>
+                <div class="p-3 rounded-lg border-l-4 bg-amber-50/50" style="border-left-color: #F2C94C;">
+                  <strong style="color: #1F3C88;">Minutos 13 a 20 (Redacción de hallazgos):</strong> Entre todos acuerdan y escriben dos conclusiones breves al pie del mural: <em>"Descubrimos que antes..."</em> y <em>"Lo comprobamos gracias a las fuentes..."</em>.
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl border border-dashed text-xs sm:text-sm" style="border-color: #3F72AF; background-color: #F8FAFC;">
+              <strong style="color: #1F3C88;">Recursos del momento:</strong>
+              <span contenteditable="true" data-field="tc_recursos">Sobres rotulados con 5 tarjetas ilustradas por equipo, hojas doble oficio (Mural de Evidencias), goma en barra, marcadores y gafetes de roles.</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- ==================== MOMENTO 4: P (10 MINUTOS) ==================== -->
+        <article id="panel-p" class="momento-panel">
+          <div class="rounded-xl border-2 p-4 sm:p-5" style="border-color: #3F72AF; background-color: #FFFFFF;">
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-200">
+              <div>
+                <span class="text-xs font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md text-white" style="background-color: #3F72AF;">
+                  Momento 4 • P — Plenaria y Cierre
+                </span>
+                <h3 contenteditable="true" data-field="p_titulo" class="text-lg sm:text-xl font-extrabold mt-2" style="color: #1F3C88;">
+                  Actividad: "Congreso de Pequeños Historiadores y Ticket de Salida"
+                </h3>
+              </div>
+              <div class="flex items-center gap-2 px-3.5 py-2 rounded-xl font-extrabold text-sm" style="background-color: #F2C94C; color: #1F3C88;">
+                <span>Duración:</span>
+                <span contenteditable="true" data-field="p_minutos" id="input-min-p" oninput="recalculateTimes()" class="underline">10</span>
+                <span>minutos</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <h4 class="text-xs font-extrabold uppercase tracking-wider mb-1" style="color: #3F72AF;">Propósito Pedagógico</h4>
+                <p contenteditable="true" data-field="p_proposito" class="text-sm text-slate-800">
+                  Socializar los descubrimientos cooperativos, contrastar argumentos, consolidar el concepto de la historia como ciencia y verificar individualmente el logro de aprendizaje mediante una evaluación de salida rápida.
+                </p>
+              </div>
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                <h4 class="text-xs font-extrabold uppercase tracking-wider mb-1" style="color: #3F72AF;">Evidencia Final de Aprendizaje</h4>
+                <p contenteditable="true" data-field="p_evidencia" class="text-sm text-slate-800">
+                  <strong>Ticket de Salida individual ("Mi Lupa Histórica")</strong> completado al cierre de la clase y murales cooperativos expuestos en la galería del aula.
+                </p>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <h4 class="text-xs font-extrabold uppercase tracking-wider mb-2" style="color: #1F3C88;">Instrucciones Paso a Paso y Distribución de los 10 Minutos</h4>
+              <div contenteditable="true" data-field="p_pasos" class="space-y-2.5 text-sm text-slate-800">
+                <div class="p-3 rounded-lg border-l-4 bg-blue-50/40" style="border-left-color: #1F3C88;">
+                  <strong style="color: #1F3C88;">Minutos 0 a 5 (Socialización y síntesis):</strong> Todos los equipos colocan su <em>Mural de Evidencias</em> en la pizarra. Dos portavoces seleccionados explican: (a) cuál fue la pista falsa que descartaron y por qué, y (b) qué fuente histórica les dio más información. La docente retroalimenta y concluye junto al grupo: <em>"La historia es una ciencia porque reconstruye la verdad del pasado con pruebas reales"</em>.
+                </div>
+                <div class="p-3 rounded-lg border-l-4 bg-amber-50/50" style="border-left-color: #F2C94C;">
+                  <strong style="color: #1F3C88;">Minutos 5 a 10 (Estrategia de evaluación de salida — Ticket de Salida):</strong> Cada estudiante recibe la tarjeta impresa <em>"Ticket de Salida: Mi Lupa Histórica"</em> con dos ítems breves:
+                  <br/>1. <em>Aplicación a nueva situación:</em> "Si quisieras investigar cómo jugaban tus abuelos en el recreo, ¿qué harías?" (Marca con ✔: <em>[ ] Entrevistar a un abuelo y ver fotos antiguas</em> / <em>[ ] Inventar una historia mágica</em>).
+                  <br/>2. <em>Verificación del logro:</em> Escribe o dibuja 1 tipo de fuente histórica aprendida hoy y su nombre (Oral, Escrita, Material o Gráfica).
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl border border-dashed text-xs sm:text-sm" style="border-color: #3F72AF; background-color: #F8FAFC;">
+              <strong style="color: #1F3C88;">Recursos del momento:</strong>
+              <span contenteditable="true" data-field="p_recursos">Cinta adhesiva para exponer murales en la pizarra, tarjetas impresas de Ticket de Salida ("Mi Lupa Histórica") y lápiz.</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         6. RECURSOS DIDÁCTICOS (LISTA INTERACTIVA DE PREPARACIÓN DE AULA)
+         ====================================================================== -->
+    <section class="montano-card">
+      <div class="montano-card-header secondary">
+        <div class="flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm" style="background-color: #F2C94C; color: #1F3C88;">5</span>
+          <h2 class="text-base sm:text-lg font-bold tracking-tight">Recursos Didácticos (Aula Presencial)</h2>
+        </div>
+        <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-white/15">100% Materiales Físicos Disponibles</span>
+      </div>
+      <div class="p-5 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider mb-3" style="color: #1F3C88;">Material del Docente</h3>
+          <ul class="space-y-2 text-sm text-slate-800">
+            <li class="flex items-start gap-2">
+              <input type="checkbox" checked class="mt-1 accent-[#1F3C88]" />
+              <span contenteditable="true" data-field="rec_doc_1">Caja decorada ("Caja Misteriosa del Tiempo").</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <input type="checkbox" checked class="mt-1 accent-[#1F3C88]" />
+              <span contenteditable="true" data-field="rec_doc_2">3 objetos o láminas antiguas (foto B/N, carta manuscrita, casete o moneda).</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <input type="checkbox" checked class="mt-1 accent-[#1F3C88]" />
+              <span contenteditable="true" data-field="rec_doc_3">Pizarra, marcadores de colores y cinta adhesiva.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider mb-3" style="color: #1F3C88;">Material del Estudiante</h3>
+          <ul class="space-y-2 text-sm text-slate-800">
+            <li class="flex items-start gap-2">
+              <input type="checkbox" checked class="mt-1 accent-[#1F3C88]" />
+              <span contenteditable="true" data-field="rec_est_1">Guía impresa "Bitácora de Detective Histórico".</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <input type="checkbox" checked class="mt-1 accent-[#1F3C88]" />
+              <span contenteditable="true" data-field="rec_est_2">Tarjeta impresa "Ticket de Salida: Mi Lupa Histórica".</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <input type="checkbox" checked class="mt-1 accent-[#1F3C88]" />
+              <span contenteditable="true" data-field="rec_est_3">Cuaderno de Medio Social, lápiz, borrador y crayones.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/50">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider mb-3" style="color: #1F3C88;">Material por Equipo (TC)</h3>
+          <ul class="space-y-2 text-sm text-slate-800">
+            <li class="flex items-start gap-2">
+              <input type="checkbox" checked class="mt-1 accent-[#1F3C88]" />
+              <span contenteditable="true" data-field="rec_eq_1">Sobre cerrado con 4 tarjetas de fuentes reales + 1 pista falsa.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <input type="checkbox" checked class="mt-1 accent-[#1F3C88]" />
+              <span contenteditable="true" data-field="rec_eq_2">Pliego u hoja doble oficio ("Mural de Evidencias").</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <input type="checkbox" checked class="mt-1 accent-[#1F3C88]" />
+              <span contenteditable="true" data-field="rec_eq_3">Juego de 4 gafetes de roles cooperativos, goma y marcadores.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         7. EVALUACIÓN DEL APRENDIZAJE (TRES MOMENTOS Y RETROALIMENTACIÓN)
+         ====================================================================== -->
+    <section class="montano-card">
+      <div class="montano-card-header">
+        <div class="flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm" style="background-color: #F2C94C; color: #1F3C88;">6</span>
+          <h2 class="text-base sm:text-lg font-bold tracking-tight">Evaluación del Aprendizaje (Tres Momentos)</h2>
+        </div>
+        <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-white/15">Evaluación Formativa y Sumativa Alineada</span>
+      </div>
+      <div class="p-5 sm:p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+          <!-- Evaluación Inicial -->
+          <div class="p-4 rounded-xl border-t-4 border border-slate-200 bg-white" style="border-top-color: #3F72AF;">
+            <span class="inline-block text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded mb-2" style="background-color: rgba(63,114,175,0.14); color: #1F3C88;">
+              1. Evaluación Inicial (Diagnóstica • IM)
+            </span>
+            <p contenteditable="true" data-field="eval_inicial" class="text-sm text-slate-800">
+              <strong>Estrategia:</strong> Preguntas generadoras y diálogo dirigido frente a la <em>Caja Misteriosa del Tiempo</em>.<br/>
+              <strong>Qué se verifica:</strong> Nociones previas sobre el pasado y capacidad inicial para distinguir entre hechos reales comprobables e historias imaginarias. <em>(Evidencia diagnóstica no calificada)</em>.
+            </p>
+          </div>
+
+          <!-- Evaluación Formativa -->
+          <div class="p-4 rounded-xl border-t-4 border border-slate-200 bg-white" style="border-top-color: #F2C94C;">
+            <span class="inline-block text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded mb-2" style="background-color: #F2C94C; color: #1F3C88;">
+              2. Evaluación Formativa (Proceso • TP y TC)
+            </span>
+            <p contenteditable="true" data-field="eval_formativa" class="text-sm text-slate-800">
+              <strong>Estrategia:</strong> Observación sistemática con guía de seguimiento durante el trabajo individual y monitoreo de roles cooperativos.<br/>
+              <strong>Qué se verifica:</strong> Razonamiento al clasificar las 4 pistas en la bitácora personal, escucha activa (Hábito 5) y argumentación para descartar la pista falsa. <em>(Evidencia formativa de acompañamiento)</em>.
+            </p>
+          </div>
+
+          <!-- Evaluación Sumativa -->
+          <div class="p-4 rounded-xl border-t-4 border border-slate-200 bg-white" style="border-top-color: #1F3C88;">
+            <span class="inline-block text-[11px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded mb-2" style="background-color: #1F3C88; color: #FFFFFF;">
+              3. Evaluación Sumativa (Cierre • TC y P)
+            </span>
+            <p contenteditable="true" data-field="eval_sumativa" class="text-sm text-slate-800">
+              <strong>Estrategia:</strong> Valoración del <em>Mural de Evidencias</em> cooperativo y del <em>Ticket de Salida</em> individual mediante lista de cotejo institucional.<br/>
+              <strong>Distinción:</strong> Actividad calificable de desempeño según registro de la Unidad 1 (sin porcentaje automático rígido).
+            </p>
+          </div>
+        </div>
+
+        <!-- Retroalimentación y Oportunidad de Mejora -->
+        <div class="p-4 rounded-xl border-l-4 bg-amber-50/45" style="border-left-color: #F2C94C;">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider mb-1.5" style="color: #1F3C88;">
+            Retroalimentación Específica y Oportunidad de Mejora
+          </h3>
+          <p contenteditable="true" data-field="retroalimentacion" class="text-sm text-slate-800">
+            <strong>Retroalimentación inmediata:</strong> Durante el TP y TC, la docente valida los aciertos mencionando el criterio logrado (ej. <em>"Excelente, identificaste que la carta es una fuente escrita porque tiene palabras de esa época"</em>).<br/>
+            <strong>Oportunidad de mejora:</strong> Si un estudiante confunde dos tipos de fuentes en su bitácora o ticket de salida, en los primeros 5 minutos de la siguiente sesión participará en la estación manipulada <em>"Mesa del Historiador"</em> (con 4 objetos reales etiquetados) junto a un compañero tutor para reclasificar su ejemplo familiar y validar su logro.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         8. INSTRUMENTO DE EVALUACIÓN INTERACTIVO (LISTA DE COTEJO)
+         ====================================================================== -->
+    <section class="montano-card">
+      <div class="montano-card-header secondary">
+        <div class="flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm" style="background-color: #F2C94C; color: #1F3C88;">7</span>
+          <h2 class="text-base sm:text-lg font-bold tracking-tight">Instrumento de Evaluación — Lista de Cotejo Interactiva</h2>
+        </div>
+        <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-white/15 no-print">Marca los niveles para calcular desempeño</span>
+      </div>
+
+      <div class="p-5 sm:p-6">
+        <!-- Barra de identificación del evaluado y resultado automático -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200 mb-4">
+          <div class="flex flex-wrap items-center gap-2 text-sm">
+            <strong style="color: #1F3C88;">Estudiante / Equipo evaluado:</strong>
+            <span contenteditable="true" data-field="evaluado_nombre" class="font-medium text-slate-800 bg-white px-2.5 py-1 rounded border border-slate-200">
+              Equipo 1 (Ana, Mateo, Sofía, Lucas)
+            </span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="text-xs text-slate-600 font-semibold">
+              Puntaje: <span id="rubric-score" class="text-base font-extrabold" style="color: #1F3C88;">10 / 10</span>
+            </div>
+            <span id="rubric-level-badge" class="text-xs font-extrabold uppercase px-3 py-1.5 rounded-full" style="background-color: #F2C94C; color: #1F3C88;">
+              Logro Alcanzado (Destacado)
+            </span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="text-white text-xs uppercase tracking-wider" style="background-color: #1F3C88;">
+                <th class="p-3 rounded-tl-lg">Criterio de Evaluación (Alineado al Logro)</th>
+                <th class="p-3 text-center w-28">Logrado (2)</th>
+                <th class="p-3 text-center w-28">En proceso (1)</th>
+                <th class="p-3 text-center w-28 rounded-tr-lg">Por mejorar (0)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200" id="rubric-tbody">
+              <tr class="hover:bg-slate-50">
+                <td class="p-3">
+                  <strong style="color: #1F3C88;">1. Comprensión de la historia como ciencia:</strong>
+                  <span contenteditable="true" data-field="crit_1">Diferencia hechos históricos comprobables de relatos imaginarios o fantasiosos.</span>
+                </td>
+                <td class="p-3 text-center"><input type="radio" name="crit1" value="2" checked onchange="calculateRubric()" class="rubric-radio" /></td>
+                <td class="p-3 text-center"><input type="radio" name="crit1" value="1" onchange="calculateRubric()" class="rubric-radio" /></td>
+                <td class="p-3 text-center"><input type="radio" name="crit1" value="0" onchange="calculateRubric()" class="rubric-radio" /></td>
+              </tr>
+
+              <tr class="hover:bg-slate-50">
+                <td class="p-3">
+                  <strong style="color: #1F3C88;">2. Clasificación de fuentes históricas:</strong>
+                  <span contenteditable="true" data-field="crit_2">Identifica y clasifica correctamente los 4 tipos de fuentes (orales, escritas, materiales y gráficas).</span>
+                </td>
+                <td class="p-3 text-center"><input type="radio" name="crit2" value="2" checked onchange="calculateRubric()" class="rubric-radio" /></td>
+                <td class="p-3 text-center"><input type="radio" name="crit2" value="1" onchange="calculateRubric()" class="rubric-radio" /></td>
+                <td class="p-3 text-center"><input type="radio" name="crit2" value="0" onchange="calculateRubric()" class="rubric-radio" /></td>
+              </tr>
+
+              <tr class="hover:bg-slate-50">
+                <td class="p-3">
+                  <strong style="color: #1F3C88;">3. Aplicación a su realidad personal:</strong>
+                  <span contenteditable="true" data-field="crit_3">Representa y explica una evidencia real de su historia familiar en su bitácora individual.</span>
+                </td>
+                <td class="p-3 text-center"><input type="radio" name="crit3" value="2" checked onchange="calculateRubric()" class="rubric-radio" /></td>
+                <td class="p-3 text-center"><input type="radio" name="crit3" value="1" onchange="calculateRubric()" class="rubric-radio" /></td>
+                <td class="p-3 text-center"><input type="radio" name="crit3" value="0" onchange="calculateRubric()" class="rubric-radio" /></td>
+              </tr>
+
+              <tr class="hover:bg-slate-50">
+                <td class="p-3">
+                  <strong style="color: #1F3C88;">4. Reconstrucción cronológica y pensamiento crítico:</strong>
+                  <span contenteditable="true" data-field="crit_4">Descarta la pista falsa con argumentos y ordena lógicamente las evidencias (Antes → Después → Ahora).</span>
+                </td>
+                <td class="p-3 text-center"><input type="radio" name="crit4" value="2" checked onchange="calculateRubric()" class="rubric-radio" /></td>
+                <td class="p-3 text-center"><input type="radio" name="crit4" value="1" onchange="calculateRubric()" class="rubric-radio" /></td>
+                <td class="p-3 text-center"><input type="radio" name="crit4" value="0" onchange="calculateRubric()" class="rubric-radio" /></td>
+              </tr>
+
+              <tr class="hover:bg-slate-50">
+                <td class="p-3">
+                  <strong style="color: #1F3C88;">5. Sinergia y cumplimiento de roles (Hábitos 5 y 6):</strong>
+                  <span contenteditable="true" data-field="crit_5">Escucha con respeto a sus compañeros y cumple activamente su rol en el equipo.</span>
+                </td>
+                <td class="p-3 text-center"><input type="radio" name="crit5" value="2" checked onchange="calculateRubric()" class="rubric-radio" /></td>
+                <td class="p-3 text-center"><input type="radio" name="crit5" value="1" onchange="calculateRubric()" class="rubric-radio" /></td>
+                <td class="p-3 text-center"><input type="radio" name="crit5" value="0" onchange="calculateRubric()" class="rubric-radio" /></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="rubric-feedback-box" class="mt-4 p-3 rounded-xl text-xs sm:text-sm bg-blue-50/60 border border-blue-100 text-slate-800">
+          <strong>Sugerencia de retroalimentación automática:</strong> El estudiante/equipo demuestra dominio sólido del método histórico y clasifica evidencias con criterio científico. Puede asumir rol de tutor par en la siguiente actividad.
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         9. OBSERVACIONES Y REFLEXIÓN DOCENTE
+         ====================================================================== -->
+    <section class="montano-card">
+      <div class="montano-card-header">
+        <div class="flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm" style="background-color: #F2C94C; color: #1F3C88;">8</span>
+          <h2 class="text-base sm:text-lg font-bold tracking-tight">Observaciones y Reflexión Docente</h2>
+        </div>
+        <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-white/15">Bitácora de Mejora Continua</span>
+      </div>
+      <div class="p-5 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider mb-2" style="color: #1F3C88;">
+            Adecuaciones Curriculares / Atención a la Diversidad
+          </h3>
+          <div contenteditable="true" data-field="obs_adecuaciones" class="text-sm text-slate-700 min-h-[85px]">
+            Para estudiantes en proceso de consolidación lectora, las tarjetas del expediente incluyen pictogramas claros y el Analista de Pistas lee en voz alta cada evidencia. Se permite responder el Ticket de Salida mediante dibujo rotulado.
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider mb-2" style="color: #1F3C88;">
+            Observaciones Durante el Desarrollo de la Clase
+          </h3>
+          <div contenteditable="true" data-field="obs_clase" class="text-sm text-slate-700 min-h-[85px]">
+            Espacio editable para anotar incidencias, participación destacada de los equipos, manejo del tiempo en cada transición o dudas frecuentes surgidas en el aula...
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/50">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider mb-2" style="color: #1F3C88;">
+            Reflexión Docente Post-Clase
+          </h3>
+          <div contenteditable="true" data-field="obs_reflexion" class="text-sm text-slate-700 min-h-[85px]">
+            ¿Qué actividad generó mayor entusiasmo y comprensión? ¿La pista falsa del dinosaurio provocó buen debate crítico? Anotar ajustes para la próxima sesión de la Unidad 1...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pie de página institucional -->
+    <footer class="text-center text-xs text-slate-500 py-4 border-t border-slate-200 mt-4">
+      <p class="font-semibold" style="color: #1F3C88;">Colegio Montano • Planificación Diaria por Competencias (Modelo Formativo Montano)</p>
+      <p class="mt-0.5">Documento interactivo autogestionable • Medio Social • Segundo Primaria</p>
+    </footer>
+  </main>
+
+  <!-- MODAL DE CONFIRMACIÓN PARA RESTABLECER (Sin usar confirm() nativo) -->
+  <div id="reset-modal" class="modal-backdrop no-print" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border-t-4" style="border-top-color: #F2C94C;">
+      <h3 id="modal-title" class="text-lg font-extrabold" style="color: #1F3C88;">¿Restablecer plantilla original?</h3>
+      <p class="text-sm text-slate-600 mt-2">
+        Esta acción borrará los cambios guardados en este navegador y restaurará los datos originales del <strong>Plan N.° 8 de Medio Social (Segundo Primaria)</strong>.
+      </p>
+      <div class="flex justify-end gap-2.5 mt-5">
+        <button type="button" onclick="closeResetModal()" class="btn-institucional border border-slate-300 text-slate-700 bg-white hover:bg-slate-50">
+          Cancelar
+        </button>
+        <button type="button" onclick="confirmReset()" class="btn-institucional btn-primary">
+          Sí, restablecer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFICACIÓN TOAST -->
+  <div id="toast-notification" class="no-print" role="status" aria-live="polite"></div>
+
+  <!-- ========================================================================
+       LÓGICA INTERACTIVA EN JAVASCRIPT PURO (AUTÓNOMO)
+       ======================================================================== -->
+  <script>
+    const STORAGE_KEY = 'colegio_montano_plan_diario_v1';
+    let showAllPanelsMode = false;
+
+    // Mostrar notificación toast discreta
+    function showToast(message) {
+      const toast = document.getElementById('toast-notification');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Cambiar entre pestañas IM, TP, TC y P
+    function switchTab(tabId) {
+      showAllPanelsMode = false;
+      const toggleAllBtn = document.getElementById('btn-toggle-all');
+      if (toggleAllBtn) toggleAllBtn.textContent = 'Ver los 4 momentos juntos';
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tabId);
+      });
+
+      document.querySelectorAll('.momento-panel').forEach(panel => {
+        panel.classList.toggle('active', panel.id === 'panel-' + tabId);
+      });
+    }
+
+    // Alternar vista de todos los momentos juntos en pantalla
+    function toggleAllPanels() {
+      showAllPanelsMode = !showAllPanelsMode;
+      const toggleAllBtn = document.getElementById('btn-toggle-all');
+      const panels = document.querySelectorAll('.momento-panel');
+      const tabs = document.querySelectorAll('.tab-btn');
+
+      if (showAllPanelsMode) {
+        panels.forEach(p => p.classList.add('active'));
+        tabs.forEach(t => t.classList.remove('active'));
+        toggleAllBtn.textContent = 'Volver a vista por pestañas';
+      } else {
+        switchTab('im');
+      }
+    }
+
+    // Activar o desactivar Hábitos del Modelo Formativo Montano
+    function toggleHabito(cardElement, event) {
+      cardElement.classList.toggle('selected');
+      const statusBadge = cardElement.querySelector('.habito-status');
+      const isSelected = cardElement.classList.contains('selected');
+
+      if (isSelected) {
+        statusBadge.textContent = 'Activo';
+        statusBadge.style.backgroundColor = '#F2C94C';
+        statusBadge.style.color = '#1F3C88';
+      } else {
+        statusBadge.textContent = 'Opcional';
+        statusBadge.style.backgroundColor = '#F1F5F9';
+        statusBadge.style.color = '#64748B';
+      }
+      savePlan(false);
+    }
+
+    // Recalcular tiempos en vivo y verificar suma exacta de 60 minutos
+    function recalculateTimes() {
+      const parseMin = (id, fallback) => {
+        const el = document.getElementById(id);
+        if (!el) return fallback;
+        const val = parseInt(el.textContent.replace(/\D/g, ''), 10);
+        return isNaN(val) ? 0 : val;
+      };
+
+      const mIM = parseMin('input-min-im', 10);
+      const mTP = parseMin('input-min-tp', 20);
+      const mTC = parseMin('input-min-tc', 20);
+      const mP  = parseMin('input-min-p', 10);
+      const total = mIM + mTP + mTC + mP;
+
+      document.getElementById('badge-min-im').textContent = mIM;
+      document.getElementById('badge-min-tp').textContent = mTP;
+      document.getElementById('badge-min-tc').textContent = mTC;
+      document.getElementById('badge-min-p').textContent  = mP;
+
+      const headerBadge = document.getElementById('badge-total-minutos');
+      const desglose = document.getElementById('desglose-tiempos-header');
+      const alertaSecuencia = document.getElementById('alerta-tiempo-secuencia');
+
+      headerBadge.textContent = `${total} min`;
+      desglose.textContent = `IM ${mIM}m + TP ${mTP}m + TC ${mTC}m + P ${mP}m = ${total} min`;
+
+      if (total === 60) {
+        alertaSecuencia.textContent = 'Suma exacta: 60 / 60 min';
+        alertaSecuencia.style.backgroundColor = '#F2C94C';
+        alertaSecuencia.style.color = '#1F3C88';
+      } else {
+        alertaSecuencia.textContent = `Atención: Suma actual ${total} min (Objetivo: 60 min)`;
+        alertaSecuencia.style.backgroundColor = '#FFFFFF';
+        alertaSecuencia.style.color = '#B91C1C';
+      }
+    }
+
+    // Calcular puntaje y nivel de desempeño en la Lista de Cotejo
+    function calculateRubric() {
+      let totalScore = 0;
+      for (let i = 1; i <= 5; i++) {
+        const selected = document.querySelector(`input[name="crit${i}"]:checked`);
+        if (selected) {
+          totalScore += parseInt(selected.value, 10);
+        }
+      }
+
+      const scoreEl = document.getElementById('rubric-score');
+      const badgeEl = document.getElementById('rubric-level-badge');
+      const feedbackEl = document.getElementById('rubric-feedback-box');
+
+      scoreEl.textContent = `${totalScore} / 10`;
+
+      if (totalScore >= 8) {
+        badgeEl.textContent = 'Logro Alcanzado (Destacado)';
+        badgeEl.style.backgroundColor = '#F2C94C';
+        badgeEl.style.color = '#1F3C88';
+        feedbackEl.innerHTML = '<strong>Sugerencia de retroalimentación automática:</strong> El estudiante/equipo demuestra dominio sólido del método histórico y clasifica evidencias con criterio científico. Puede asumir rol de tutor par en la siguiente actividad.';
+      } else if (totalScore >= 5) {
+        badgeEl.textContent = 'En Proceso de Consolidación';
+        badgeEl.style.backgroundColor = '#3F72AF';
+        badgeEl.style.color = '#FFFFFF';
+        feedbackEl.innerHTML = '<strong>Sugerencia de retroalimentación automática:</strong> Reconoce la importancia de investigar el pasado, pero requiere apoyo puntual para diferenciar entre fuentes escritas y materiales. Reforzar en la estación "Mesa del Historiador".';
+      } else {
+        badgeEl.textContent = 'Requiere Acompañamiento';
+        badgeEl.style.backgroundColor = '#1F3C88';
+        badgeEl.style.color = '#FFFFFF';
+        feedbackEl.innerHTML = '<strong>Sugerencia de retroalimentación automática:</strong> Aplicar oportunidad de mejora guiada: trabajar con 2 objetos concretos del aula (una foto y un libro) para que identifique oralmente qué información nos da cada pista.';
+      }
+
+      savePlan(false);
+    }
+
+    // Guardar estado completo en localStorage
+    function savePlan(notify = true) {
+      try {
+        const data = {
+          fields: {},
+          habitos: [],
+          rubric: {}
+        };
+
+        document.querySelectorAll('[data-field]').forEach(el => {
+          data.fields[el.dataset.field] = el.innerHTML;
+        });
+
+        document.querySelectorAll('.habito-card.selected').forEach(card => {
+          data.habitos.push(card.dataset.habito);
+        });
+
+        for (let i = 1; i <= 5; i++) {
+          const checked = document.querySelector(`input[name="crit${i}"]:checked`);
+          if (checked) data.rubric[`crit${i}`] = checked.value;
+        }
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        if (notify) {
+          showToast('Planificación guardada correctamente en el navegador.');
+        }
+      } catch (e) {
+        if (notify) showToast('No se pudo acceder al almacenamiento local.');
+      }
+    }
+
+    // Cargar estado guardado desde localStorage al iniciar
+    function loadPlan() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+
+        if (data.fields) {
+          document.querySelectorAll('[data-field]').forEach(el => {
+            if (data.fields[el.dataset.field] !== undefined) {
+              el.innerHTML = data.fields[el.dataset.field];
+            }
+          });
+        }
+
+        if (Array.isArray(data.habitos)) {
+          document.querySelectorAll('.habito-card').forEach(card => {
+            const isSelected = data.habitos.includes(card.dataset.habito);
+            card.classList.toggle('selected', isSelected);
+            const statusBadge = card.querySelector('.habito-status');
+            if (isSelected) {
+              statusBadge.textContent = 'Activo';
+              statusBadge.style.backgroundColor = '#F2C94C';
+              statusBadge.style.color = '#1F3C88';
+            } else {
+              statusBadge.textContent = 'Opcional';
+              statusBadge.style.backgroundColor = '#F1F5F9';
+              statusBadge.style.color = '#64748B';
+            }
+          });
+        }
+
+        if (data.rubric) {
+          for (let i = 1; i <= 5; i++) {
+            const val = data.rubric[`crit${i}`];
+            if (val !== undefined) {
+              const radio = document.querySelector(`input[name="crit${i}"][value="${val}"]`);
+              if (radio) radio.checked = true;
+            }
+          }
+        }
+
+        recalculateTimes();
+        calculateRubric();
+      } catch (e) {
+        console.warn('Error al cargar datos guardados:', e);
+      }
+    }
+
+    // Exportar/Descargar archivo HTML autocontenido con las ediciones actuales
+    function exportHTML() {
+      savePlan(false);
+      // Fijar el estado actual de los radio buttons en el DOM antes de serializar
+      document.querySelectorAll('input[type="radio"]').forEach(r => {
+        if (r.checked) r.setAttribute('checked', 'checked');
+        else r.removeAttribute('checked');
+      });
+
+      const docContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([docContent], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+
+      const temaEl = document.querySelector('[data-field="tema"]');
+      const slug = (temaEl ? temaEl.textContent : 'plan-clase')
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Colegio-Montano-Plan-${slug || 'clase'}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      showToast('Archivo HTML descargado con tus ediciones.');
+    }
+
+    // Modal de restablecimiento
+    function openResetModal() {
+      document.getElementById('reset-modal').classList.add('open');
+    }
+
+    function closeResetModal() {
+      document.getElementById('reset-modal').classList.remove('open');
+    }
+
+    function confirmReset() {
+      localStorage.removeItem(STORAGE_KEY);
+      closeResetModal();
+      location.reload();
+    }
+
+    // Inicialización al cargar la página
+    window.addEventListener('DOMContentLoaded', () => {
+      loadPlan();
+
+      // Auto-guardado discreto al perder el foco en campos editables
+      document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+        el.addEventListener('blur', () => savePlan(false));
+      });
+    });
+  </script>
+</body>
+</html>
